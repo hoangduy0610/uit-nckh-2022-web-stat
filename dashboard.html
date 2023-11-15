@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/32373a3c6b.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+</head>
+
+<body>
+  <div class="sidebar">
+    <a href="#attendance"><i class="fa-solid fa-house"></i> Attendance</a>
+    <a href="#mood-tracker"><i class="fa-solid fa-face-smile"></i> Mood tracker</a>
+    <a href="#students-data"><i class="fa fa-fw fa-user"></i> Student's data</a>
+  </div>
+  <div class="user">
+    <img src="images/icon-256x256.png" class="user-pic">
+  </div>
+
+  <div class="container">
+    <canvas id="columnChart"></canvas>
+  </div>
+  <script>
+    let columnChart = document.getElementById('columnChart').getContext('2d');
+    Chart.defaults.global.defaultFontFamily = '';
+    Chart.defaults.global.defaultFontSize = 30;
+    Chart.defaults.global.defaultFontColor = 'gray';
+    columnChart.canvas.width = 600;
+    columnChart.canvas.height = 300;
+
+    let massPopChart = new Chart(columnChart, {
+      type: 'bar',
+      data: {
+        labels: ['Happy', 'Neutral', 'Sleepy', 'Disgusting', 'Surprise', 'Sad', 'Angry'],
+        datasets: [{
+          label: 'Mức độ',
+          data: [
+            60, 100, 50, 5, 10, 18, 40, 20
+          ],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(255, 99, 132, 0.6)'
+          ],
+          borderWidth: 1,
+          borderColor: '#777',
+          hoverBorderWidth: 3,
+          hoverBorderColor: '#000'
+        }]
+      },
+      options: {
+        title: {
+          display: true,
+          text: 'Biểu đồ cảm xúc trong tuần',
+          fontSize: 50
+        },
+        legend: {
+          display: true,
+          position: 'right',
+          labels: {
+            fontColor: '#000'
+          }
+        },
+        layout: {
+          padding: {
+            left: 50,
+            right: 0,
+            bottom: 0,
+            top: 0
+          }
+
+        },
+        tooltips: {
+          enabled: true //lia chuột qua nó hiện giá trị
+        }
+      }
+    });
+  </script>
+
+  <div class="container">
+    <canvas id="lineChart"></canvas>
+  </div>
+  <script>
+    let ctx = document.getElementById('lineChart').getContext('2d');
+    let LineChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['2020-2021', '2021-2022', '2022-2023'],
+        datasets: [{
+          label: 'Hiện diện',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1,
+          data: [98, 80, 125]
+        }, {
+          label: 'Vắng',
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1,
+          data: [52, 61, 20]
+        }, {
+          label: 'Dự thính',
+          backgroundColor: 'rgba(255, 240, 0, 0.2)',
+          borderColor: 'rgba(255, 240, 0, 1)',
+          borderWidth: 1,
+          data: [28, 43, 40]
+        }]
+      },
+      options: {
+        scales: {
+          x: {
+            max: 20
+          },
+          y: {
+            max: 100
+          }
+        },
+        title: {
+          display: true,
+          text: 'Tổng quan dữ liệu',
+          fontSize: 50
+        },
+        legend: {
+          display: true,
+          position: 'right',
+          labels: {
+            fontColor: '#000'
+          }
+        },
+        layout: {
+          padding: {
+            left: 0,
+            right: 0,
+            bottom: 0,
+            top: 0
+          }
+
+        }
+      }
+    });
+  </script>
+
+  <div class="container">
+    <canvas id="pieChart"></canvas>
+  </div>
+  <script>
+    let pieChart = document.getElementById('pieChart').getContext('2d');
+    let PieChart = new Chart(pieChart, {
+      type: 'pie',
+      data: {
+        labels: ['Hạnh phúc', 'Sợ hãi', 'Buồn bả', 'Tức giận', 'Bình thường'],
+        datasets: [{
+          label: 'Phần trăm',
+          backgroundColor: [
+            'rgb(255, 99, 132)',
+            'rgb(54, 162, 235)',
+            'rgb(255, 205, 86)',
+            'rgb(80, 200, 120)',
+            'rgb(253, 127, 27)'
+          ],
+          borderWidth: 1,
+          data: [45.8, 8.3, 8.3, 8.3, 29.2]
+        }]
+      },
+      options: {
+        title: {
+          display: true,
+          text: 'Cảm xúc trong ngày',
+          fontSize: 50
+        },
+        legend: {
+          display: true,
+          position: 'right',
+          labels: {
+            fontColor: '#000'
+          }
+        },
+      }
+    });
+  </script>
+
+
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous">
+  </script>
+
+</html>
