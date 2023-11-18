@@ -2,103 +2,144 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://kit.fontawesome.com/32373a3c6b.js" crossorigin="anonymous"></script>    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style-sign.css" />
+    <title>Sign in & Sign up Form</title>
 </head>
 
 <body>
-    <div>
-        <div class="row align-items-start p-3">
-            <div class="col-4">
-                <a href="" class="logo">
-                    <img src="images/360_F_335954772_DXpPAtzlHmqlgPkWi0oRXE33D0QYZHKd.jpg" alt="logo ToCoToCo"
-                        style="width:150px; height:auto;">
-                </a>
-            </div>
-            <div class="col-4">
-                <div class="box-search">
-                    <input type="text" name="search" class="text" placeholder="Search">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                </div>
-            </div>
-            <div class="col-4">
-                <button onclick="document.getElementById('signup').style.display='block'" type="button" class="btn">Sign
-                    in/ Sign up</button>
-                <div id="signup" class="modal">
-                    <div class="modal-content">
-                        <form action="" class="form">
-                            <h2>Create new account</h2>
-                            <input type="email" name="email" id="email" class="box" placeholder="Email Address">
-                            <input type="password" name="password" id="password" class="box" placeholder="Password">
-                            <input type="password" name="repeat-pw" id="rp-password" class="box" placeholder="Repeat Password">
-                            <button type="submit" class="submit">CREATE</button>
-                            <p>By signing up you agree to the terms and conditions</p>
-                        </form>
-                        <div class="side">
-                            <img src="images/B3JKwU.jpg" alt="">
-                        </div>
+    <div class="container">
+        <div class="forms-container">
+            <div class="signin-signup">
+                <form action="#" class="sign-in-form">
+                    <h2 class="title">Sign in</h2>
+                    <div class="input-field">
+                        <i class="fas fa-user"></i>
+                        <input type="email" placeholder="Email" />
                     </div>
-                </div>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" placeholder="Password" />
+                    </div>
+                    <input type="submit" value="Login" class="btn solid" />
+                    <a href="">Forgot password?</a>
+                    <p class="social-text">Or</p>
+                    <div class="social-media">
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-google"></i>
+                        </a>
+                    </div>
+                </form>
+                <form action="#" class="sign-up-form">
+                    <h2 class="title">Sign up</h2>
+                    <div class="input-field">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" placeholder="Email" />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" placeholder="Password" />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" placeholder="Repeat Password" />
+                    </div>
+                    <input type="submit" class="btn" value="CREATE" />
+                    <p>By signing up you agree to the terms and conditions</p>
+                    <p class="social-text">Or</p>
+                    <div class="social-media">
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-google"></i>
+                        </a>
+                    </div>
+                </form>
             </div>
-        </div>
-        <div class="content">
-            <h1>Welcome,</h1>
-            <p>We offer you a website to administrate your classroom
-                attendance as well as students’ emotions.</p>
-            <a href="#" class="btn">Get Started</a>
         </div>
 
-        <img src="images/Screenshot 2023-09-12 220330.png" class="feature-img">
+        <div class="panels-container">
+            <div class="panel left-panel">
+                <div class="content">
+                    <h3>Hi, friend!</h3>
+                    <p>
+                        New user?
+                    </p>
+                    <button class="btn transparent" id="sign-up-btn">
+                        Sign up
+                    </button>
+                </div>
+                <img src="" class="image" alt="" />
+            </div>
+            <div class="panel right-panel">
+                <div class="content">
+                    <h3>Let's get you set up</h3>
+                    <p>
+                        Already have an account?
+                    </p>
+                    <button class="btn transparent" id="sign-in-btn">
+                        Sign in
+                    </button>
+                </div>
+                <img src="" class="image" alt="" />
+            </div>
+        </div>
     </div>
 
     <script>
-        var modal = document.getElementById('signup');
-        window.onclick = function (event) {
-            if (event.target == modal) {
-                modal.style.display = 'none';
-            }
-        }
+        const sign_in_btn = document.querySelector("#sign-in-btn");
+        const sign_up_btn = document.querySelector("#sign-up-btn");
+        const container = document.querySelector(".container");
+
+        sign_up_btn.addEventListener("click", () => {
+            container.classList.add("sign-up-mode");
+        });
+
+        sign_in_btn.addEventListener("click", () => {
+            container.classList.remove("sign-up-mode");
+        });
     </script>
 
     <script>
         data = {
-    username: 'admin',
-    password: 'admin'
-};
-fetch('https://legacy.zythsoft.com/login.php',{
-    method: 'POST',
-    headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-})
-.then(res => res.json())
-.then(json => {
-    console.log(json)
-})
+            username: 'admin',
+            password: 'admin'
+        };
+        fetch('https://legacy.zythsoft.com/login.php', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json())
+            .then(json => {
+                console.log(json)
+            })
     </script>
 
-<script>
-    function auth(){
-        var email=document.getElementById('email').value;
-        var password=document.getElementById('password').value;
-        var rpassword=document.getElementById('rp-passwprd').value;
+    <script>
+        function auth() {
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            var rpassword = document.getElementById('rp-passwprd').value;
 
-        if(email=='admin@gmail.com' && password=='12345678' && rpassword=='12345678')
-        {
-            window.location.assign('dashboard.html');
-            alert("Login successfully");
-        } else {
-            alert("Invalid Information");
-            return;
+            if (email == 'admin@gmail.com' && password == '12345678' && rpassword == '12345678') {
+                window.location.assign('dashboard.html');
+                alert("Login successfully");
+            } else {
+                alert("Invalid Information");
+                return;
+            }
         }
-    }
-</script>
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous">
