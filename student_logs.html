@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Detail</title>
+    <link rel="stylesheet" href="styles/dashboard.css">
+    <link rel="stylesheet" href="styles/loader.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/32373a3c6b.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+</head>
+
+<body>
+    <div class="overlay" style="display: none;">
+        <div class="overlay__inner">
+            <div class="overlay__content"><span class="spinner"></span></div>
+        </div>
+    </div>
+    <div class="sidebar">
+        <a href="dashboard.html"><i class="fa-solid fa-house" style="margin-left:3px;"></i> Home</a>
+        <a href="mood_detail.html"><i class="fa-solid fa-face-smile" style="margin-left:3px;"></i> Mood tracker</a>
+        <a href="#"><i class="fa fa-fw fa-user"></i> Student's data</a>
+        <!-- Logout -->
+
+        <div class="logout">
+            <a role="button" id="logout"><i class="fa fa-fw fa-sign-out"></i> Logout</a>
+            <div class="user" style="font-weight: bold; font-size: 12pt;">
+                <img src="images/icon-256x256.png" class="user-pic"> Hello,&nbsp;<span class="user-name">Admin</span>
+            </div>
+        </div>
+    </div>
+    <div style="margin-left: 200px; padding-left: 10rem; padding-right: 10rem;">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>Create New Student</h2>
+                    <form id="studentForm">
+                        <div class="mb-3">
+                            <label for="studentId" class="form-label">Student ID</label>
+                            <input type="text" class="form-control" id="studentId" name="studentId" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="studentName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="studentName" name="studentName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="studentAge" class="form-label">Age</label>
+                            <input type="number" class="form-control" id="studentAge" name="studentAge" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <h2>Students List</h2>
+                    <table id="studentsTable" class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Age</th>
+                                <th>Info</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                                <th>Restore</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Table rows will be dynamically populated using JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Information</h5>
+                    <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modal-popup">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary close" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous">
+        </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="./js/consts.js"></script>
+    <script>
+        $("#logout").click(function () {
+            localStorage.removeItem(STORAGE_KEYS.AUTH.TOKEN);
+            window.location.href = 'login.html';
+        });
+
+        const token = localStorage.getItem(STORAGE_KEYS.AUTH.TOKEN);
+        $(document).ready(function () {
+            // call to endpoint /jwt-check to check if token is valid
+            $.ajax({
+                url: `${API_URL}/jwt-check`,
+                method: 'GET',
+                headers: {
+                    'x-access-token': token
+                },
+                success: function (response) {
+                    // if token is valid, get name from localStorage and replace span
+                    const name = localStorage.getItem(STORAGE_KEYS.AUTH.NAME);
+                    $('.user-name').text(name);
+                },
+                error: function (error) {
+                    // if token is invalid, redirect to login page
+                    localStorage.removeItem(STORAGE_KEYS.AUTH.TOKEN);
+                    window.location.href = 'login.html';
+                }
+            });
+
+            // Fetch student data from localhost:8933/students
+            $.ajax({
+                url: `${API_URL}/student/list`,
+                method: 'GET',
+                headers: {
+                    'x-access-token': token
+                },
+                success: function (response) {
+                    // Populate table rows with student data
+                    const students = response.data;
+                    const tableBody = $('#studentsTable tbody');
+                    tableBody.empty();
+                    students.forEach(function (student) {
+                        const row = `<tr>
+                            <td>${student.id}</td>
+                            <td>${student.name}</td>
+                            <td>${student.age}</td>
+                            <td><button class="btn btn-info">Info</button></td>
+                            <td><button class="btn btn-primary">Edit</button></td>
+                            <td>${student.deleted_at != null ? 'Deleted' : '<button class="btn btn-danger">Delete</button>'}</td>
+                            <td>${student.deleted_at != null ? '<button class="btn btn-success">Restore</button>' : 'Not deleted'}</td>
+                        </tr>`;
+                        tableBody.append(row);
+                    });
+                },
+                error: function (error) {
+                    console.error('Failed to fetch student data:', error);
+                }
+            });
+        });
+
+        // Handle form submission
+        $('#studentForm').submit(function (event) {
+            event.preventDefault();
+            const studentId = $('#studentId').val();
+            const studentName = $('#studentName').val();
+            const studentAge = $('#studentAge').val();
+
+            // Perform AJAX request to create new student
+            $.ajax({
+                url: `${API_URL}/student`,
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'x-access-token': token
+                },
+                data: JSON.stringify({
+                    id: studentId,
+                    name: studentName,
+                    age: parseInt(studentAge)
+                }),
+                success: function (response) {
+                    // Clear form inputs
+                    $('#studentId').val('');
+                    $('#studentName').val('');
+                    $('#studentAge').val('');
+                    alert('Student created successfully!');
+                    location.reload();
+                },
+                error: function (error) {
+                    alert('Failed to create student!');
+                    console.error('Failed to create student:', error);
+                }
+            });
+        });
+
+        $('#studentsTable').on('click', 'button.btn-danger', function () {
+            // Get the selected row
+            const row = $(this).closest('tr');
+
+            // Get the student ID from the first column of the selected row
+            const studentId = row.find('td:first').text();
+            // Delete student with the given ID
+            $.ajax({
+                url: `${API_URL}/student/${studentId}`,
+                method: 'DELETE',
+                headers: {
+                    'x-access-token': token
+                },
+                success: function (response) {
+                    alert('Student deleted successfully!');
+                    location.reload();
+                },
+                error: function (error) {
+                    alert('Failed to delete student!');
+                    console.error('Failed to delete student:', error);
+                }
+            });
+        });
+
+        $('#studentsTable').on('click', 'button.btn-success', function () {
+            // Get the selected row
+            const row = $(this).closest('tr');
+
+            // Get the student ID from the first column of the selected row
+            const studentId = row.find('td:first').text();
+            // restore student with the given ID
+            $.ajax({
+                url: `${API_URL}/student/restore/${studentId}`,
+                method: 'PUT',
+                headers: {
+                    'x-access-token': token
+                },
+                success: function (response) {
+                    alert('Student restored successfully!');
+                    location.reload();
+                },
+                error: function (error) {
+                    alert('Failed to restored student!');
+                    console.error('Failed to restored student:', error);
+                }
+            });
+        });
+
+        $('#studentsTable').on('click', 'button.btn-info', function () {
+            // Get the selected row
+            const row = $(this).closest('tr');
+
+            // Get the student ID from the first column of the selected row
+            const studentId = row.find('td:first').text();
+            // Show modal with full information
+            $.ajax({
+                url: `${API_URL}/student/${studentId}`,
+                method: 'GET',
+                headers: {
+                    'x-access-token': token
+                },
+                success: function (response) {
+                    const student = response.data;
+                    // Create new modal and show modal
+                    $("#modal-popup").html(`
+                        <p>Name ${student.name}</p>
+                        <p>Student ID: ${student.id}</p>
+                        <p>Age: ${student.age}</p>
+                    `)
+                    $('.modal').modal('show');
+
+
+                },
+                error: function (error) {
+                    alert('Failed to get student info!');
+                    console.error('Failed to get student info:', error);
+                }
+            });
+        });
+
+        // Close modal when close button is clicked
+        $('.modal .close').on('click', function () {
+            $('.modal').modal('hide');
+        });
+    </script>
+</body>
+
+</html>

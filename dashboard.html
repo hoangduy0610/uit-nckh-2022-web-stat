@@ -11,17 +11,21 @@
   <script src="https://kit.fontawesome.com/32373a3c6b.js" crossorigin="anonymous"></script>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
 </head>
 
 <body>
   <div class="sidebar">
-    <a href="#attendance"><i class="fa-solid fa-house" style="margin-left:3px;"></i> Home</a>
-    <a href="#mood-tracker"><i class="fa-solid fa-face-smile" style="margin-left:3px;"></i> Mood tracker</a>
-    <a href="#students-data"><i class="fa fa-fw fa-user"></i> Student's data</a>
+    <a href="#"><i class="fa-solid fa-house" style="margin-left:3px;"></i> Home</a>
+    <a href="mood_detail.html"><i class="fa-solid fa-face-smile" style="margin-left:3px;"></i> Mood tracker</a>
+    <a href="student_logs.html"><i class="fa fa-fw fa-user"></i> Student's data</a>
     <!-- Logout -->
-    <a role="button" id="logout" class="logout"><i class="fa fa-fw fa-sign-out"></i> Logout</a>
+    <div class="logout">
+      <a role="button" id="logout"><i class="fa fa-fw fa-sign-out"></i> Logout</a>
+      <div class="user" style="font-weight: bold; font-size: 12pt;">
+        <img src="images/icon-256x256.png" class="user-pic"> Hello,&nbsp;<span class="user-name">Admin</span>
+      </div>
+    </div>
   </div>
   <div class="user">
     <img src="images/icon-256x256.png" class="user-pic">
@@ -69,7 +73,9 @@
           'x-access-token': token
         },
         success: function (response) {
-          // if token is valid, do nothing
+          // if token is valid, get name from localStorage and replace span
+          const name = localStorage.getItem(STORAGE_KEYS.AUTH.NAME);
+          $('.user-name').text(name);
         },
         error: function (error) {
           // if token is invalid, redirect to login page

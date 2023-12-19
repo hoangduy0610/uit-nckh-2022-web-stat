@@ -193,6 +193,7 @@
                         alert("Login successfully");
                         // Save token to local storage
                         localStorage.setItem(STORAGE_KEYS.AUTH.TOKEN, response.token);
+                        localStorage.setItem(STORAGE_KEYS.AUTH.NAME, response.user.name);
                         // Redirect to dashboard page
                         window.location.href = 'dashboard.html';
                     },
