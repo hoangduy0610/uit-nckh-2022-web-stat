@@ -12,61 +12,61 @@ input {
 }
 
 .col-4 .btn {
-    background: #00308f;
-    color: white;
-    width: 200px;
-    height: 50px;
-    right: 5%;
-    vertical-align: middle;
+  background: #00308f;
+  color: white;
+  width: 200px;
+  height: 50px;
+  right: 5%;
+  vertical-align: middle;
 }
 
 .col-4 .box-search {
-    height: 30px;
-    display: flex;
-    cursor: pointer;
-    padding: 10px 20px;
-    border-radius: 30px;
-    align-items: center;
-    border: grey;
+  height: 30px;
+  display: flex;
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 30px;
+  align-items: center;
+  border: grey;
 }
 
-.col-4 .box-search input{
-    border: none;
-}
-
-.content {
-    padding-left: 100px;
-    padding-right: 100px;
-}
-
-.content .btn {
-    background: #00308f;
-    color: white;
-    width: 200px;
-    height: 50px;
-    vertical-align: middle;
-    padding: 10px;
+.col-4 .box-search input {
+  border: none;
 }
 
 .content {
-    margin-top: 10%;
-    max-width: 50%;
+  padding-left: 100px;
+  padding-right: 100px;
+}
+
+.content .btn, .f-btn {
+  background: #00308f;
+  color: white;
+  width: 200px;
+  height: 50px;
+  vertical-align: middle;
+  padding: 10px;
+}
+
+.content {
+  margin-top: 10%;
+  max-width: 50%;
 }
 
 .content h1 {
-    font-size: 70px;
+  font-size: 70px;
 }
 
 .content p {
-    margin: 10px 0 30px;
+  margin: 10px 0 30px;
 }
 
 .feature-img {
-    width: 40%;
-    position:absolute;
-    bottom: 0;
-    top: 150px;
-    right: 5%;
+  width: 40%;
+  position: absolute;
+  bottom: 0;
+  top: 150px;
+  right: 5%;
 }
 
 
@@ -191,7 +191,7 @@ form.sign-in-form {
   border-color: #00308f;
 }
 
-.btn {
+.btn, .f-btn {
   width: 150px;
   background-color: #00308f;
   border: none;
@@ -206,9 +206,10 @@ form.sign-in-form {
   transition: 0.5s;
 }
 
-.btn:hover {
+.btn:hover, .f-btn:hover {
   background-color: #00308f;
 }
+
 .panels-container {
   position: absolute;
   height: 100%;
@@ -333,6 +334,7 @@ form.sign-in-form {
     min-height: 800px;
     height: 100vh;
   }
+
   .signin-signup {
     width: 100%;
     top: 95%;
@@ -439,9 +441,11 @@ form.sign-in-form {
   .image {
     display: none;
   }
+
   .panel .content {
     padding: 0.5rem 1rem;
   }
+
   .container {
     padding: 1.5rem;
   }
@@ -456,9 +460,3 @@ form.sign-in-form {
     left: 50%;
   }
 }
-
-
-
-
-
-

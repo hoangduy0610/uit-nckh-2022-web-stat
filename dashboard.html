@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
-  <link rel="stylesheet" href="style-dashboard.css">
+  <link rel="stylesheet" href="styles/dashboard.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://kit.fontawesome.com/32373a3c6b.js" crossorigin="anonymous"></script>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -17,185 +17,83 @@
 
 <body>
   <div class="sidebar">
-    <a href="#attendance"><i class="fa-solid fa-house"></i> Attendance</a>
-    <a href="#mood-tracker"><i class="fa-solid fa-face-smile"></i> Mood tracker</a>
+    <a href="#attendance"><i class="fa-solid fa-house" style="margin-left:3px;"></i> Home</a>
+    <a href="#mood-tracker"><i class="fa-solid fa-face-smile" style="margin-left:3px;"></i> Mood tracker</a>
     <a href="#students-data"><i class="fa fa-fw fa-user"></i> Student's data</a>
+    <!-- Logout -->
+    <a role="button" id="logout" class="logout"><i class="fa fa-fw fa-sign-out"></i> Logout</a>
   </div>
   <div class="user">
     <img src="images/icon-256x256.png" class="user-pic">
   </div>
-
-  <div class="container">
-    <canvas id="columnChart"></canvas>
+  <div style="margin-left: 200px; padding-left: 10rem; padding-right: 10rem;">
+    <div class="container-fluid">
+      <div class="row gx-5">
+        <div class="col-6">
+          <div class="row">
+            <canvas id="columnChart"></canvas>
+          </div>
+          <div class="row" style="height: 20px;"></div>
+          <div class="row">
+            <canvas id="lineChart"></canvas>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="row">
+            <canvas id="pieChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous">
+    </script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="./js/consts.js"></script>
+  <script src="./js/chart_utils.js"></script>
+  <script src="./js/color_utils.js"></script>
   <script>
-    let columnChart = document.getElementById('columnChart').getContext('2d');
-    Chart.defaults.global.defaultFontFamily = '';
-    Chart.defaults.global.defaultFontSize = 30;
-    Chart.defaults.global.defaultFontColor = 'gray';
-    columnChart.canvas.width = 600;
-    columnChart.canvas.height = 300;
+    $("#logout").click(function () {
+      localStorage.removeItem(STORAGE_KEYS.AUTH.TOKEN);
+      window.location.href = 'login.html';
+    });
 
-    let massPopChart = new Chart(columnChart, {
-      type: 'bar',
-      data: {
-        labels: ['Happy', 'Neutral', 'Sleepy', 'Disgusting', 'Surprise', 'Sad', 'Angry'],
-        datasets: [{
-          label: 'Mức độ',
-          data: [
-            60, 100, 50, 5, 10, 18, 40, 20
-          ],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.6)',
-            'rgba(255, 99, 132, 0.6)',
-            'rgba(255, 99, 132, 0.6)',
-            'rgba(255, 99, 132, 0.6)',
-            'rgba(255, 99, 132, 0.6)',
-            'rgba(255, 99, 132, 0.6)',
-            'rgba(255, 99, 132, 0.6)'
-          ],
-          borderWidth: 1,
-          borderColor: '#777',
-          hoverBorderWidth: 3,
-          hoverBorderColor: '#000'
-        }]
-      },
-      options: {
-        title: {
-          display: true,
-          text: 'Biểu đồ cảm xúc trong tuần',
-          fontSize: 50
+    $(document).ready(function () {
+      const token = localStorage.getItem(STORAGE_KEYS.AUTH.TOKEN);
+      // call to endpoint /jwt-check to check if token is valid
+      $.ajax({
+        url: `${API_URL}/jwt-check`,
+        method: 'GET',
+        headers: {
+          'x-access-token': token
         },
-        legend: {
-          display: true,
-          position: 'right',
-          labels: {
-            fontColor: '#000'
-          }
+        success: function (response) {
+          // if token is valid, do nothing
         },
-        layout: {
-          padding: {
-            left: 50,
-            right: 0,
-            bottom: 0,
-            top: 0
-          }
-
-        },
-        tooltips: {
-          enabled: true //lia chuột qua nó hiện giá trị
+        error: function (error) {
+          // if token is invalid, redirect to login page
+          localStorage.removeItem(STORAGE_KEYS.AUTH.TOKEN);
+          window.location.href = 'login.html';
         }
-      }
+      });
+
+      // Chart.defaults.global.defaultFontFamily = '';
+      // Chart.defaults.global.defaultFontSize = 30;
+      // Chart.defaults.global.defaultFontColor = 'gray';
+      const emotion_label = ['Happy', 'Neutral', 'Fear', 'Disgusting', 'Surprise', 'Sad', 'Angry'];
+
+      // ----------------------------------------------------------------
+      // Call API to get data
+      // const today = new Date().toISOString().split('T')[0];
+      const today = "2023-11-26"
+      makeChartToday(emotion_label, today, token);
+
+      // const from_date = new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().split('T')[0];
+      const from_date = "2023-11-19"
+      makeChartThisWeek(emotion_label, from_date, today, token);
     });
   </script>
-
-  <div class="container">
-    <canvas id="lineChart"></canvas>
-  </div>
-  <script>
-    let ctx = document.getElementById('lineChart').getContext('2d');
-    let LineChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['2020-2021', '2021-2022', '2022-2023'],
-        datasets: [{
-          label: 'Hiện diện',
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-          borderColor: 'rgba(75, 192, 192, 1)',
-          borderWidth: 1,
-          data: [98, 80, 125]
-        }, {
-          label: 'Vắng',
-          backgroundColor: 'rgba(255, 99, 132, 0.2)',
-          borderColor: 'rgba(255, 99, 132, 1)',
-          borderWidth: 1,
-          data: [52, 61, 20]
-        }, {
-          label: 'Dự thính',
-          backgroundColor: 'rgba(255, 240, 0, 0.2)',
-          borderColor: 'rgba(255, 240, 0, 1)',
-          borderWidth: 1,
-          data: [28, 43, 40]
-        }]
-      },
-      options: {
-        scales: {
-          x: {
-            max: 20
-          },
-          y: {
-            max: 100
-          }
-        },
-        title: {
-          display: true,
-          text: 'Tổng quan dữ liệu',
-          fontSize: 50
-        },
-        legend: {
-          display: true,
-          position: 'right',
-          labels: {
-            fontColor: '#000'
-          }
-        },
-        layout: {
-          padding: {
-            left: 0,
-            right: 0,
-            bottom: 0,
-            top: 0
-          }
-
-        }
-      }
-    });
-  </script>
-
-  <div class="container">
-    <canvas id="pieChart"></canvas>
-  </div>
-  <script>
-    let pieChart = document.getElementById('pieChart').getContext('2d');
-    let PieChart = new Chart(pieChart, {
-      type: 'pie',
-      data: {
-        labels: ['Hạnh phúc', 'Sợ hãi', 'Buồn bả', 'Tức giận', 'Bình thường'],
-        datasets: [{
-          label: 'Phần trăm',
-          backgroundColor: [
-            'rgb(255, 99, 132)',
-            'rgb(54, 162, 235)',
-            'rgb(255, 205, 86)',
-            'rgb(80, 200, 120)',
-            'rgb(253, 127, 27)'
-          ],
-          borderWidth: 1,
-          data: [45.8, 8.3, 8.3, 8.3, 29.2]
-        }]
-      },
-      options: {
-        title: {
-          display: true,
-          text: 'Cảm xúc trong ngày',
-          fontSize: 50
-        },
-        legend: {
-          display: true,
-          position: 'right',
-          labels: {
-            fontColor: '#000'
-          }
-        },
-      }
-    });
-  </script>
-
-
 </body>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-  integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous">
-  </script>
 
 </html>
