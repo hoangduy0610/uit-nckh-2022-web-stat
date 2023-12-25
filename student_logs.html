@@ -34,7 +34,7 @@
             </div>
         </div>
     </div>
-    <div style="margin-left: 200px; padding-left: 10rem; padding-right: 10rem;">
+    <div style="margin-left: 200px; margin-top: 20px; padding-left: 10rem; padding-right: 10rem;">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-6">
@@ -268,6 +268,74 @@
                 error: function (error) {
                     alert('Failed to get student info!');
                     console.error('Failed to get student info:', error);
+                }
+            });
+        });
+
+        $('#studentsTable').on('click', 'button.btn-primary', function () {
+            // Get the selected row
+            const row = $(this).closest('tr');
+
+            // Get the student ID from the first column of the selected row
+            const studentId = row.find('td:first').text();
+            // Show modal with full information
+            $.ajax({
+                url: `${API_URL}/student/${studentId}`,
+                method: 'GET',
+                headers: {
+                    'x-access-token': token
+                },
+                success: function (response) {
+                    const student = response.data;
+                    // Create new modal and show modal
+                    $("#modal-popup").html(`
+                        <form>
+                            <div class="form-group">
+                                <label for="editStudentId">Student ID</label>
+                                <input type="text" class="form-control" id="editStudentId" disabled value="${student.id}">
+                            </div>
+                            <div class="form-group my-3">
+                                <label for="editName">Name</label>
+                                <input type="text" class="form-control" id="editName" value="${student.name}">
+                            </div>
+                            <div class="form-group my-3">
+                                <label for="editAge">Age</label>
+                                <input type="number" class="form-control" id="editAge" value="${student.age}">
+                            </div>
+                            <button type="button" class="btn btn-primary editStudentSubmit">Save</button>
+                        </form>
+                    `);
+                    $('.modal').modal('show');
+                },
+                error: function (error) {
+                    alert('Failed to get student info!');
+                    console.error('Failed to get student info:', error);
+                }
+            });
+        });
+
+        $('#modal-popup').on('click', '.editStudentSubmit', function () {
+            const studentId = $('#editStudentId').val();
+            $.ajax({
+                url: `${API_URL}/student/${studentId}`,
+                method: 'PUT',
+                headers: {
+                    'x-access-token': token,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify({
+                    name: $('#editName').val(),
+                    age: $('#editAge').val()
+                }),
+                success: function (response) {
+                    alert('Student updated successfully!');
+                    $('.modal').modal('hide');
+                    location.reload();
+                },
+                error: function (error) {
+                    alert('Failed to update student!');
+                    console.error('Failed to update student:', error);
                 }
             });
         });
